@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Progressão Sênior</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="auth-card">
+        <h2>Sempre Alerta!</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div>
+            {% for category, message in messages %}
+              <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <label>Usuário</label>
+            <input type="text" name="username" placeholder="Digite seu usuário..." required>
+            
+            <label>Senha</label>
+            <input type="password" name="password" placeholder="Digite sua senha..." required>
+            
+            <button type="submit">Entrar</button>
+        </form>
+
+        <p>Ainda não tem conta? <br> <a href="{{ url_for('auth.register') }}">Cadastre-se aqui</a>.</p>
+    </div>
+</body>
+</html>

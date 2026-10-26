@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Progressão Sênior</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="auth-card">
+        <h2>Novo Sênior/Guia</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div>
+            {% for category, message in messages %}
+              <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            <label>Escolha um Usuário</label>
+            <input type="text" name="username" placeholder="Como quer ser chamado?" required>
+            
+            <label>Crie uma Senha</label>
+            <input type="password" name="password" placeholder="Senha segura" required>
+            
+            <button type="submit">Finalizar Cadastro</button>
+        </form>
+
+        <p>Já possui conta? <br> <a href="{{ url_for('auth.login') }}">Faça login aqui</a>.</p>
+    </div>
+</body>
+</html>

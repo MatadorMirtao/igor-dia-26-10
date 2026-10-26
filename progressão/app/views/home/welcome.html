@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progressão Sênior</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body style="display: block;"> 
+    <div class="container">
+        <div class="welcome-header">
+            <div>
+                <h2>Sempre Alerta, {{ username | capitalize }}!</h2>
+                <span style="color: #666;">Painel de Progressão Pessoal</span>
+            </div>
+            <a href="{{ url_for('auth.logout') }}">
+                <button class="btn-logout">Sair do Sistema</button>
+            </a>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div>
+            {% for category, message in messages %}
+              <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <h3 style="color: #8B1C31;">Resumo dos Distintivos</h3>
+        <div class="dashboard-panel">
+            
+            {% for chave, dist in stats.items() %}
+            <div class="badge-card">
+                <h4>{{ dist.nome }}</h4>
+                
+        <div class="progress-bar-bg">
+            <!-- A cor muda dinamicamente dependendo da porcentagem atingida -->
+            <div class="progress-bar-fill" 
+                style="width: {{ dist.perc }}%; 
+                    background-color: {% if dist.perc < 35 %}#d9534f{% elif dist.perc < 70 %}#f0ad4e{% elif dist.perc < 100 %}#8B1C31{% else %}#2e8b57{% endif %};">
+        </div>
+    </div>
+                
+                <p>{{ dist.atual }} / {{ dist.meta }} itens</p>
+                
+                {% if dist.perc >= 100 %}
+                    <span class="text-conquistado">★ Apto!</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+        </div>
+        
+        <p>Marque abaixo as etapas que você já cumpriu. A Chefia avaliará as etapas solicitadas.</p>
+        
+        <form method="POST" action="{{ url_for('home.salvar_progressao') }}">
+            
+            {% for area, itens in progresso_por_area.items() %}
+            <div class="area-card">
+                
+                {% if area == 'Período Introdutório' %}
+                    <h3>{{ area }}</h3>
+                {% else %}
+                    <h3>Desenvolvimento {{ area }}</h3>
+                {% endif %}
+                
+                <div class="area-items">
+                    {% for item in itens %}
+                        <label class="item-row">
+                            <input type="checkbox" name="itens_concluidos" value="{{ item.item_id }}" 
+                                {% if item.concluido_jovem %}checked{% endif %}
+                                {% if item.aprovado_chefia %}disabled{% endif %}>
+                            
+                            <span class="item-desc">
+                                {{ item.descricao }}
+                            </span>
+
+                            {% if item.aprovado_chefia %}
+                                <span class="badge-aprovado">Avaliado pela Chefia</span>
+                            {% endif %}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+                <p style="text-align: center;">Nenhum item de progressão cadastrado no sistema ainda.</p>
+            {% endfor %}
+
+            {% if progresso_por_area %}
+                <button type="submit" class="btn-salvar">Salvar Minha Progressão</button>
+            {% endif %}
+        </form>
+    </div>
+</body>
+</html>
